@@ -28,7 +28,7 @@ Wi-Fi and the front door remain hypothesis devices. Lights, air conditioning, te
 | 0 | `Iteration 0.html` | Can the three persona scenarios be represented as understandable task flows? | Established the low-fidelity information architecture and permission journey | Needed a more compact, realistic prototype that could demonstrate cross-role state changes |
 | 1 | `Iteration 1.html` | Do role-specific layouts make the system more comfortable and manageable? | Participants felt somewhat more comfortable, but still needed time to adapt | Learnability and terminology needed improvement; task evidence was not measured |
 | 2 | `Iteration 2.html` | Do contextual guidance, stable placement, and icon-plus-label controls improve adaptation? | Qualitatively faster learning, adaptation, and completion; positive response to icons and a "convenient experience" comment | Role-based layouts alone have limited novelty; adaptive autonomy and permission comprehension still require stronger design and evaluation |
-| 3, planned | Next prototype | Can transparent adaptation balance accessibility, autonomy, safety, and learning? | Not yet implemented or evaluated | Will test the proposed PACE model and record measurable task evidence |
+| 3, in progress | `Iteration 3.html` | Can transparent adaptation balance accessibility, autonomy, safety, and learning? | First testable slice implemented; not yet evaluated with participants | Must complete the risk-aware approval details, reversibility, and formal task evaluation |
 
 ## Iteration 0 Low-Fidelity Task-Flow Baseline
 
@@ -315,6 +315,30 @@ To keep the next prototype feasible and evaluable, Iteration 3 should implement 
 
 English/Urdu switching, voice interaction, audio confirmation, and automatic behavior inference should remain stretch goals until the core PACE interaction has been tested.
 
+## Iteration 3 Implementation Status
+
+`Iteration 3.html` was created as a separate prototype so Iterations 0-2 remain available for comparison.
+
+### Implemented in the first Iteration 3 slice
+
+1. Added user-selectable Basic, Guided, and Full experience controls for Murium. The interface states that complexity does not change authority.
+2. Added a simulated adaptation suggestion that explains why it appeared and requires Accept or Not now before revealing additional controls.
+3. Preserved the positions and meanings of the essential Light, Fan, and TV controls.
+4. Expanded the locked-control explanation for Ayun to answer why the action is restricted, who decides, what may be requested, and when access expires.
+5. Retained request status, temporary approval options, shared cross-role state, icon-plus-label controls, keyboard focus, and Escape-key dialog dismissal from Iteration 2.
+6. Added an explicit prototype notice that PACE recommendations and familiarity are simulated and that no machine learning is operating.
+
+### Still required before participant review
+
+- Add Undo after accepting an adaptation; dismissal currently prevents the change but acceptance is not yet reversible.
+- Make Basic, Guided, and Full produce a more complete and consistently specified difference in visible controls.
+- Show person, device, exact action, context, duration, and risk together in every administrator request card.
+- Add a safer alternative for the front door, such as View status only, rather than treating every approval as equivalent.
+- Record measurable task evidence and attributed comments; no Iteration 3 usability result exists yet.
+
+### Evidence status
+
+The Iteration 3 features are design hypotheses derived from the novelty review and earlier limitations. They must not be described as participant-validated improvements until Murium, Ayun, and the administrator complete the planned tasks.
 ## Iteration 3 Research Questions
 
 ### Primary question
