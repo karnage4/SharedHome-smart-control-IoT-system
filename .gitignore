@@ -1,0 +1,4 @@
+.codex_review/
+~$*.docx
+*.tmp
+*.log
