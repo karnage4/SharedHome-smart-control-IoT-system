@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SharedHome prototype</title>
+<style>
+:root{--bg:#e9eff3;--card:#fff;--ink:#14212b;--mute:#52636f;--line:#d3dde4;--accent:#0b6e8a;--accent-ink:#fff;--on:#d8eef5;--lock:#eceff1;--amber:#8a5200;--amber-bg:#fdf0d5;--ok:#17653a;--ok-bg:#dcf2e3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e161c;--card:#17222a;--ink:#e6eef3;--mute:#9db0bc;--line:#2a3a45;--accent:#5cc3e0;--accent-ink:#06222b;--on:#17404d;--lock:#1f2c34;--amber:#f2c36b;--amber-bg:#3a2d12;--ok:#7fdca0;--ok-bg:#16301f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e161c;--card:#17222a;--ink:#e6eef3;--mute:#9db0bc;--line:#2a3a45;--accent:#5cc3e0;--accent-ink:#06222b;--on:#17404d;--lock:#1f2c34;--amber:#f2c36b;--amber-bg:#3a2d12;--ok:#7fdca0;--ok-bg:#16301f;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+.app{max-width:440px;margin:0 auto;min-height:100vh;padding:12px 14px 32px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.seg button{flex:1;border:0;background:none;padding:10px 6px;border-radius:10px;font-weight:600;color:var(--mute)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.badge{display:inline-block;min-width:20px;padding:0 6px;border-radius:10px;background:var(--amber-bg);color:var(--amber);font-size:13px;margin-left:4px}
+h1{font-size:24px;margin:18px 0 2px}
+h2{font-size:17px;margin:20px 0 8px}
+.sub{color:var(--mute);margin:0 0 14px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:14px;border-radius:16px;border:2px solid var(--line);background:var(--card);min-height:96px}
+.tile .ic{font-size:26px}.tile .nm{font-weight:700}.tile .st{font-size:14px;color:var(--mute)}
+.tile.on{background:var(--on);border-color:var(--accent)}
+.tile.locked{background:var(--lock);border-style:dashed;color:var(--mute)}
+.big .tiles{grid-template-columns:1fr}
+.big .tile{flex-direction:row;align-items:center;gap:16px;min-height:112px;padding:18px}
+.big .tile .ic{font-size:44px}.big .tile .nm{font-size:26px}.big .tile .st{font-size:20px}
+.big h1{font-size:30px}.big .sub{font-size:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0}
+.row+.row{border-top:1px solid var(--line)}
+.btn{border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:12px;padding:10px 14px;font-weight:700}
+.btn.alt{background:none;color:var(--accent)}
+.btn.sm{padding:6px 10px;font-size:14px;border-radius:10px}
+.btn[disabled]{opacity:.55;cursor:default}
+.big .btn{font-size:22px;padding:16px 18px;width:100%}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pill{font-size:13px;border-radius:10px;padding:2px 8px;background:var(--lock);color:var(--mute)}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.wait{background:var(--amber-bg);color:var(--amber)}
+.step{display:flex;align-items:center;justify-content:center;gap:18px;font-size:28px;font-weight:700;margin:6px 0}
+.step button{width:64px;height:64px;border-radius:50%;border:2px solid var(--accent);background:none;font-size:30px;color:var(--accent)}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sheet{background:var(--card);width:100%;max-width:440px;border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px))}
+.sheet h3{margin:0 0 6px;font-size:20px}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;z-index:30;max-width:90%;text-align:center}
+.note{font-size:13px;color:var(--mute);margin-top:18px}
+</style></head><body>
+<div class="app" id="app"></div>
+<script>
+const NAMES={ac:"Air conditioner",wifi:"Wi-Fi",door:"Front door"};
+const ICON={ac:"❄️",wifi:"📶",door:"🚪"};
+const S={role:"admin",more:false,sheet:null,toast:"",temp:24,nid:1,reqs:[],
+dev:{eLight:true,eFan:false,eTV:false,cLight:true,cLamp:false,ac:false,wifi:true,door:false},
+acc:{ac:null,wifi:null,door:null},dis:{},pref:{Murium:26,Ayun:22},set:24,dec:false};
+const h=location.hash.slice(1);if(["admin","elder","child"].includes(h))S.role=h;
+const open=k=>{const a=S.acc[k];return a&&(a.t==="always"||a.t==="once"||a.t==="rule"||(a.t==="hour"&&Date.now()<a.until))};
+const pend=k=>S.reqs.find(r=>r.item===k&&r.status==="pending");
+const npend=()=>S.reqs.filter(r=>r.status==="pending").length+(S.pref.Murium!==S.pref.Ayun&&!S.dec?1:0);
+const cnt=k=>S.reqs.filter(r=>r.who==="Ayun"&&r.item===k).length;
+const sugg=()=>["wifi","ac","door"].filter(k=>cnt(k)>=2&&!open(k)&&!S.dis[k]);
+function neg(w){const o=w==="Murium"?"Ayun":"Murium",p=S.pref,b='style="width:44px;height:44px;font-size:22px"';
+ return `<div class="card"><b>Living room AC</b><div class="sub" style="margin:2px 0 4px;font-size:15px">Set to ${S.set}°C. ${o} prefers ${p[o]}°C.</div><div class="step" style="margin:4px 0;font-size:22px"><span style="font-size:16px;font-weight:400">You prefer</span><button ${b} data-a="pref" data-w="${w}" data-v="-1" aria-label="Cooler">−</button>${p[w]}°<button ${b} data-a="pref" data-w="${w}" data-v="1" aria-label="Warmer">+</button></div>${p.Murium!==p.Ayun?`<span class="pill wait">${S.dec?"Ramz decided: "+S.set+"°C":"Different preferences. Ramz will decide"}</span>`:`<span class="pill ok">Everyone agrees</span>`}</div>`}
+function admNeg(){const p=S.pref,c=Math.round((p.Murium+p.Ayun)/2),diff=p.Murium!==p.Ayun;
+ return `<div class="card">Now set to <b>${S.set}°C</b>. Murium prefers ${p.Murium}°C, Ayun prefers ${p.Ayun}°C.${diff&&!S.dec?`<div class="btns"><button class="btn sm" data-a="dec" data-v="${c}">Use ${c}°C (compromise)</button><button class="btn sm alt" data-a="dec" data-v="${p.Murium}">Murium’s ${p.Murium}°C</button><button class="btn sm alt" data-a="dec" data-v="${p.Ayun}">Ayun’s ${p.Ayun}°C</button></div>`:""}</div>`}
+function rulesCard(){const r=[];
+ ["wifi","ac","door"].forEach(k=>{const a=S.acc[k];
+  if(!open(k))r.push([NAMES[k]+" is locked for Ayun","Set by Ramz to keep the home safe."]);
+  else if(a.t==="rule")r.push(["Ayun can use "+NAMES[k]+" 4 to 6 pm daily","Set by Ramz. Ayun asked "+cnt(k)+" times."]);
+  else r.push(["Ayun can use "+NAMES[k]+(a.t==="hour"?" for 1 hour":a.t==="once"?" one time":""),"Approved by Ramz."])});
+ r.push(["Murium sees her own room first","Set by Ramz. Fewer choices make controls easier."]);
+ if(S.dec)r.push(["Living room AC is "+S.set+"°C","Decided by Ramz after hearing both preferences."]);
+ return `<div class="card">${r.map(x=>`<div class="row"><span><b>${x[0]}</b><br><span style="color:var(--mute);font-size:14px">${x[1]}</span></span></div>`).join("")}</div>`}
+function say(m){S.toast=m;render();clearTimeout(say.t);say.t=setTimeout(()=>{S.toast="";render()},2600)}
+function tile(k,label,ic,on,onTxt,offTxt,locked){
+ return `<button class="tile ${locked?"locked":on?"on":""}" data-a="tog" data-k="${k}" aria-pressed="${!!on}">
+ <span class="ic">${locked?"🔒":ic}</span><span class="nm">${label}</span>
+ <span class="st">${locked?"Locked. Tap to see why":on?onTxt:offTxt}</span></button>`}
+function elder(){
+ const d=S.dev;
+ return `<div class="big"><h1>Good evening, Murium</h1><p class="sub">Your room</p>
+ <div class="tiles">${tile("eLight","Light","💡",d.eLight,"On","Off")}${tile("eFan","Fan","🌀",d.eFan,"On","Off")}${tile("eTV","TV","📺",d.eTV,"On","Off")}</div>
+ <h2 style="font-size:22px">${S.more?"More controls":""}</h2>
+ ${S.more?`<div class="card"><div style="font-size:20px;font-weight:700">Room temperature</div>
+ <div class="step"><button data-a="temp" data-v="-1" aria-label="Cooler">−</button><span>${S.temp}°C</span><button data-a="temp" data-v="1" aria-label="Warmer">+</button></div>
+ <button class="btn alt" data-a="help">Ask Ramz for help</button></div><h2 style="font-size:22px">Living room</h2>${neg("Murium")}<h2 style="font-size:22px">Home rules</h2>${rulesCard()}`:""}
+ <button class="btn alt" data-a="more" style="margin-top:8px">${S.more?"Show fewer controls":"Show more controls"}</button></div>`}
+function child(){
+ const d=S.dev,mine=S.reqs.filter(r=>r.who==="Ayun").slice(-3).reverse();
+ const lk=k=>!open(k);
+ return `<h1>Hi Ayun</h1><p class="sub">Your room and the things you can use</p>
+ <div class="tiles">${tile("cLight","Light","💡",d.cLight,"On","Off")}${tile("cLamp","Night lamp","🌙",d.cLamp,"On","Off")}
+ ${["wifi","ac","door"].map(k=>tile(k,NAMES[k],ICON[k],k==="door"?d.door:d[k],k==="door"?"Unlocked":"On",k==="door"?"Locked":"Off",lk(k))).join("")}</div>
+ ${mine.length?`<h2>My requests</h2><div class="card">${mine.map(r=>`<div class="row"><span>${NAMES[r.item]}</span><span class="pill ${r.status==="approved"?"ok":r.status==="pending"?"wait":""}">${r.status==="pending"?"Waiting for Ramz":r.status==="approved"?"Approved: "+r.label:"Not this time"}</span></div>`).join("")}</div>`:""}
+ <h2>Living room</h2>${neg("Ayun")}<h2>Home rules</h2>${rulesCard()}`}
+function admin(){
+ const d=S.dev,pr=S.reqs.filter(r=>r.status==="pending");const sg=sugg().map(k=>`<div class="card" style="border-color:var(--accent)"><b>Suggestion</b><div>Ayun has asked for ${NAMES[k]} ${cnt(k)} times. Allow it 4 to 6 pm every day so he doesn’t need to ask?</div><div class="btns"><button class="btn sm" data-a="rule" data-k="${k}">Allow 4 to 6 pm daily</button><button class="btn sm alt" data-a="nodis" data-k="${k}">Not now</button></div></div>`).join("");
+ const sw=(k,l)=>`<div class="row"><span>${l}</span><button class="btn sm ${d[k]?"":"alt"}" data-a="tog" data-k="${k}">${d[k]?"On":"Off"}</button></div>`;
+ return `<h1>Home</h1><p class="sub">You are the admin. Only you see everything.</p>
+ ${sg}<h2>Requests ${pr.length?`<span class="badge">${pr.length}</span>`:""}</h2>
+ <div class="card">${pr.length?pr.map(r=>`<div><b>${r.who}</b> wants <b>${NAMES[r.item]||"help"}</b>
+ <div class="btns"><button class="btn sm" data-a="grant" data-id="${r.id}" data-t="once">Once</button><button class="btn sm" data-a="grant" data-id="${r.id}" data-t="hour">1 hour</button><button class="btn sm" data-a="grant" data-id="${r.id}" data-t="always">Always</button><button class="btn sm alt" data-a="deny" data-id="${r.id}">Deny</button></div></div>`).join("<hr>"):`<span class="sub" style="margin:0">No requests. When someone asks for access, it shows up here.</span>`}</div>
+ <h2>Devices</h2><div class="card">${sw("eLight","Murium’s light")}${sw("eFan","Murium’s fan")}${sw("eTV","Murium’s TV")}${sw("cLight","Ayun’s light")}${sw("cLamp","Ayun’s night lamp")}${sw("ac","Air conditioner")}${sw("wifi","Wi-Fi")}</div>
+ <h2>Ayun’s access</h2><div class="card">${["wifi","ac","door"].map(k=>{const a=S.acc[k],o=open(k);return `<div class="row"><span>${NAMES[k]} <span class="pill ${o?"ok":""}">${o?(a.t==="hour"?"1 hour":a.t==="once"?"One time":"Allowed"):"Locked"}</span></span><button class="btn sm alt" data-a="lock" data-k="${k}">${o?"Lock":"Allow"}</button></div>`}).join("")}</div>
+ <h2>Murium’s view</h2><div class="card"><div class="row"><span>Show “More controls”</span><button class="btn sm ${S.more?"":"alt"}" data-a="more">${S.more?"Shown":"Hidden"}</button></div><span class="sub" style="margin:0;font-size:14px">She sees her own room only, with large buttons.</span></div><h2>Living room AC</h2>${admNeg()}<h2>Home rules</h2>${rulesCard()}`}
+function sheet(){
+ const k=S.sheet;if(!k)return"";const p=pend(k);
+ return `<div class="sheet-bg" data-a="close"><div class="sheet" role="dialog" aria-label="${NAMES[k]} is locked">
+ <h3>${ICON[k]} ${NAMES[k]} is locked</h3>
+ <p>Ramz (Admin) manages this to keep the home safe. You can ask for access and Ramz will see your request.</p>
+ ${p?`<button class="btn" disabled>Request sent. Waiting for Ramz</button>`:`<button class="btn" data-a="ask" data-k="${k}">Ask Ramz for access</button>`}
+ <div class="btns"><button class="btn alt" data-a="close">Close</button></div></div></div>`}
+function render(){
+ const v=S.role==="admin"?admin():S.role==="elder"?elder():child();
+ const tab=(r,l,b)=>`<button data-a="role" data-r="${r}" aria-pressed="${S.role===r}">${l}${b||""}</button>`;
+ document.getElementById("app").innerHTML=`<div class="seg" role="group" aria-label="Switch prototype view">${tab("admin","Admin",npend()?`<span class="badge">${npend()}</span>`:"")}${tab("elder","Elder (Murium)")}${tab("child","Child (Ayun)")}</div>${v}
+ <p class="note">Prototype for testing. The tabs above switch which household member you are. Changes made in one view appear in the others.</p>${sheet()}${S.toast?`<div class="toast" role="status">${S.toast}</div>`:""}`}
+document.getElementById("app").addEventListener("click",e=>{
+ const el=e.target.closest("[data-a]");if(!el)return;
+ if(el.classList.contains("sheet-bg")&&e.target!==el)return;
+ const a=el.dataset.a,k=el.dataset.k,d=S.dev;
+ if(a==="role"){S.role=el.dataset.r;S.sheet=null;render()}
+ else if(a==="close"){S.sheet=null;render()}
+ else if(a==="more"){S.more=!S.more;render()}
+ else if(a==="temp"){S.temp=Math.min(30,Math.max(18,S.temp+ +el.dataset.v));render()}
+ else if(a==="tog"){
+  if(S.role==="child"&&NAMES[k]&&!open(k)){S.sheet=k;render();return}
+  d[k]=!d[k];
+  if(S.role==="child"&&S.acc[k]&&S.acc[k].t==="once"){S.acc[k]=null;say("One-time access used. "+NAMES[k]+" is locked again.")}else render()}
+ else if(a==="ask"){S.reqs.push({id:S.nid++,who:"Ayun",item:k,status:"pending"});S.sheet=null;say("Request sent to Ramz")}
+ else if(a==="help"){S.reqs.push({id:S.nid++,who:"Murium",item:"help",status:"pending"});say("Ramz has been asked to help")}
+ else if(a==="grant"||a==="deny"){
+  const r=S.reqs.find(x=>x.id==+el.dataset.id);
+  if(a==="deny"){r.status="denied";say("Request denied")}
+  else{const t=el.dataset.t;r.status="approved";r.label=t==="once"?"one time":t==="hour"?"1 hour":"always";
+   if(NAMES[r.item])S.acc[r.item]=t==="hour"?{t,until:Date.now()+3600000}:{t};say("Approved: "+(NAMES[r.item]||"help")+" for "+r.label)}}
+ else if(a==="lock"){S.acc[k]=open(k)?null:{t:"always"};render()}
+ else if(a==="pref"){const w=el.dataset.w;S.pref[w]=Math.min(30,Math.max(18,S.pref[w]+ +el.dataset.v));S.dec=false;if(S.pref.Murium===S.pref.Ayun)S.set=S.pref[w];render()}
+ else if(a==="dec"){S.set=+el.dataset.v;S.dec=true;say("Living room set to "+S.set+"°C")}
+ else if(a==="rule"){S.acc[k]={t:"rule"};say("Rule added: "+NAMES[k]+" for Ayun, 4 to 6 pm daily")}
+ else if(a==="nodis"){S.dis[k]=1;render()}
+});
+render();
+</script></body></html>

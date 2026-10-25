@@ -28,7 +28,7 @@ Wi-Fi and the front door remain hypothesis devices. Lights, air conditioning, te
 | 0 | `Iteration 0.html` | Can the three persona scenarios be represented as understandable task flows? | Established the low-fidelity information architecture and permission journey | Needed a more compact, realistic prototype that could demonstrate cross-role state changes |
 | 1 | `Iteration 1.html` | Do role-specific layouts make the system more comfortable and manageable? | Participants felt somewhat more comfortable, but still needed time to adapt | Learnability and terminology needed improvement; task evidence was not measured |
 | 2 | `Iteration 2.html` | Do contextual guidance, stable placement, and icon-plus-label controls improve adaptation? | Qualitatively faster learning, adaptation, and completion; positive response to icons and a "convenient experience" comment | Role-based layouts alone have limited novelty; adaptive autonomy and permission comprehension still require stronger design and evaluation |
-| 3, in progress | `Iteration 3.html` | Can transparent adaptation balance accessibility, autonomy, safety, and learning? | First testable slice implemented; not yet evaluated with participants | Must complete the risk-aware approval details, reversibility, and formal task evaluation |
+| 3, in progress | `Iteration 3a.html`, `Iteration 3b.html`, and `Iteration 3c.html` | Can transparent adaptation and negotiated household rules balance accessibility, autonomy, fairness, safety, and workload? | 3c merges the adaptive and household-coordination branches; not yet participant evaluated | Must complete task-based comparison and record measurable evidence |
 
 ## Iteration 0 Low-Fidelity Task-Flow Baseline
 
@@ -339,6 +339,30 @@ English/Urdu switching, voice interaction, audio confirmation, and automatic beh
 ### Evidence status
 
 The Iteration 3 features are design hypotheses derived from the novelty review and earlier limitations. They must not be described as participant-validated improvements until Murium, Ayun, and the administrator complete the planned tasks.
+## Iteration 3 Variant Merge
+
+### Iteration 3a
+
+Focused on PACE-inspired interface adaptation: Basic, Guided, and Full experiences, an explicit adaptation suggestion, explainable restrictions, and keyboard-accessible dialogs.
+
+### Iteration 3b
+
+Explored household coordination: repeated-request rule suggestions, living-room AC preference negotiation, a shared administrator decision, and visible home rules. It strengthened the fairness and administrator-workload research questions but removed several adaptation and accessibility features from 3a.
+
+### Iteration 3c
+
+`Iteration 3c.html` merges the two branches. It retains selectable experience complexity, reversible adaptation, quick guidance, stable essential controls, four-part restriction explanations, dialog focus, and Escape dismissal. It also retains AC negotiation, separate access-request and shared-decision counts, recurring-rule suggestions, and plain-language home rules.
+
+Safety and validity corrections in 3c:
+
+- Recurring suggestions apply only to Wi-Fi and AC, never the front door.
+- A suggestion requires two approved requests rather than counting pending or denied requests.
+- No suggestion appears while a matching request is pending or access remains open.
+- Accepting a rule resolves any matching pending request.
+- The 4-to-6 pm schedule is visibly labeled as simulated and is not tied to the real clock.
+- The interface states that adaptation, scheduling, and PACE behavior are simulated and that no machine learning is operating.
+
+Iteration 3c is the candidate for participant review. These merged features remain design hypotheses until task success, time, errors, assistance, administrator interruptions, permission comprehension, perceived autonomy, and perceived fairness are recorded.
 ## Iteration 3 Research Questions
 
 ### Primary question
