@@ -1,0 +1,474 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\definecolor{SharedNavy}{HTML}{17324D}
+\definecolor{SharedTeal}{HTML}{087E96}
+\definecolor{SharedPale}{HTML}{EDF3F7}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=SharedNavy,
+  urlcolor=SharedTeal,
+  citecolor=SharedNavy,
+  pdftitle={SharedHome Milestone 2 Design and Prototype Report},
+  pdfauthor={Ramz, Hamza, and Karam}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\footnotesize\textcolor{SharedNavy}{SHAREDHOME \textbar\ MILESTONE 2}}
+\fancyfoot[C]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlength{\tabcolsep}{4.5pt}
+\renewcommand{\arraystretch}{1.22}
+\setlist[itemize]{leftmargin=1.35em,itemsep=0.2em,topsep=0.25em}
+\captionsetup{font=small,labelfont=bf}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\thead}[1]{\cellcolor{SharedNavy}\color{white}\bfseries #1}
+\newcommand{\reportimage}[2]{%
+  \IfFileExists{#1}{\includegraphics[width=#2]{#1}}{%
+    \fbox{\parbox[c][2.2in][c]{#2}{\centering Missing image\\\texttt{#1}}}}}
+
+\begin{document}
+
+\begin{titlepage}
+  \vspace*{0.7in}
+  {\Huge\bfseries SharedHome Milestone 2 Design and Prototype Report\par}
+  \vspace{0.35in}
+  {\Large\color{SharedNavy}Role adaptive smart home interaction for administrators older adults and children\par}
+
+  \vspace{0.55in}
+  \begin{tabular}{@{}ll@{}}
+    \textbf{Course} & Human Computer Interaction\\[0.35em]
+    \textbf{Term} & Fall 2026\\[0.35em]
+    \textbf{Milestone} & Solution Design and Prototype Development\\[0.35em]
+    \textbf{Team} & Ramz, Hamza, Karam
+  \end{tabular}
+
+  \vfill
+  This report documents the evidence chain, conceptual design, prototype development,
+  and iterative refinement completed for SharedHome through the Iteration 3c candidate.
+  \vspace{0.7in}
+\end{titlepage}
+
+\section{Project Summary}
+
+SharedHome is a mobile smart-home prototype for multigenerational households. It changes
+both interface complexity and action authority while keeping adaptations and restrictions
+visible. The current Iteration 3c candidate combines user-selected Basic, Guided, and Full
+experiences with explainable restrictions, scoped access requests, shared temperature
+negotiation, and plain-language home rules.
+
+Two formative reviews support continuing with role-aware layouts. Participants initially
+felt more comfortable but still needed time to adjust. After brief role-specific guidance,
+stable control placement, and clearer terminology were added, participants showed faster
+learning, adaptation, and completion. They responded positively to icons paired with text
+labels, and one participant described the prototype as a "convenient experience." These
+are qualitative findings because numerical task times, error counts, and participant-level
+outcomes were not recorded. Iteration 3c has not yet been evaluated and is reported as a
+design hypothesis.
+
+\section{Research Basis}
+
+\subsection{Initial Participants}
+
+\rowcolors{2}{white}{SharedPale}
+\begin{tabularx}{\textwidth}{P{0.85in} P{1.45in} Y P{1.05in}}
+  \thead{Participant} & \thead{Role} & \thead{Recorded finding} & \thead{Evidence}\\
+  Ramz & Technically comfortable administrator & Reported no difficulty using IoT controls & Direct interview\\
+  Murium & Older adult, age 60 & Has difficulty navigating smart-home controls & Direct interview\\
+  Ayun & Child, age 10 & Requires limits on available controls & Direct interview\\
+\end{tabularx}
+
+\subsection{Evidence Boundaries}
+
+The three interviews establish differences in technical confidence and the need for child
+restrictions. They do not independently establish that users need restriction explanations,
+in-app access requests, temporary approvals, or progressive disclosure. Those interactions
+began as design hypotheses and were explored through the prototype. Wi-Fi and front-door
+controls are also hypothesis devices rather than devices reported in the initial interviews.
+
+\begin{itemize}
+  \item The exploratory sample is small and drawn from one household context.
+  \item Ramz is both a team member and participant, which may introduce response bias.
+  \item The interview date, exact questions, and complete quotations are not recorded.
+  \item The study record should document guardian permission and age-appropriate assent for Ayun.
+\end{itemize}
+
+\section{Design Requirements}
+
+The requirements follow the course chain from user problem to research finding, design
+requirement, HCI principle, design decision, and prototype feature. The evidence status
+distinguishes interview findings from baseline usability requirements and hypotheses.
+
+\small
+\rowcolors{2}{white}{SharedPale}
+\begin{longtable}{P{0.45in} P{1.05in} P{1.7in} P{1.35in} P{1.6in}}
+  \thead{ID} & \thead{Evidence} & \thead{Requirement} & \thead{HCI rationale} & \thead{Prototype response}\\
+  \endhead
+  DR1 & Interview supported & Present role-appropriate interface complexity & Flexibility and cognitive-load reduction & Separate Administrator, Elder, and Child views\\
+  DR2 & Interview supported & Limit Murium's view to essential actions & Hick's law and minimalist design & Large room-scoped device controls\\
+  DR3 & Accessibility baseline & Make primary actions clear and easy to select & Visibility, consistency, and target size & Large labeled controls with visible state\\
+  DR4 & Interview supported & Restrict selected child actions & Error prevention and safe exploration & Visible locked Wi-Fi, AC, and front-door controls\\
+  DR5 & Design hypothesis & Explain every unavailable action & System status and problem diagnosis & Plain-language locked-control explanation\\
+  DR6 & Design hypothesis & Let a restricted user request access & User control and feedback & Request action with pending and resolved status\\
+  DR7 & Design hypothesis & Let the Administrator choose approval scope & Error prevention and reversibility & Once, one hour, always, and deny options\\
+  DR8 & Usability baseline & Confirm each device or permission action & Visibility of system status & State changes, badges, and feedback messages\\
+  DR9 & Iteration feedback & Support gradual learning and stable use & Consistency and recognition & Stable layout with dismissible guidance\\
+  DR10 & Iteration feedback & Pair device symbols with explicit labels & Recognition over recall & Icon, name, and state shown together\\
+\end{longtable}
+\normalsize
+
+\section{Conceptual Design}
+
+\subsection{Personas}
+
+\textbf{Murium.} Murium is 60 years old and has low confidence with technology. She uses
+common household devices but finds smart-home navigation difficult. Her interface emphasizes
+a few room-level controls, large targets, plain labels, and optional access to additional
+functions.
+
+\textbf{Ayun.} Ayun is 10 years old and needs limits on available controls. His interface
+keeps allowed devices easy to reach and presents restricted controls as visible locked items.
+Wi-Fi and the front door are included as hypothesis devices for testing whether permission
+boundaries are understood.
+
+\textbf{Administrator.} The Administrator is comfortable with smart-home controls and needs
+full device access, permission management, and efficient request handling. The interface
+prioritizes pending requests and shows the scope of each approval.
+
+\subsection{Scenarios and Task Flows}
+
+\rowcolors{2}{white}{SharedPale}
+\begin{tabularx}{\textwidth}{P{1.45in} Y P{1.75in}}
+  \thead{Scenario} & \thead{Main flow} & \thead{Success condition}\\
+  Murium controls comfort & Open Elder view, select Fan, turn it on, and confirm state & Complete without help or entering settings\\
+  Ayun requests Wi-Fi & Open Child view, select locked Wi-Fi, read the explanation, and request access & Explain the restriction and send one request\\
+  Administrator resolves request & Open Administrator view, review the request, select one hour, and confirm & Grant only the intended device and duration\\
+\end{tabularx}
+
+\subsection{Information Architecture}
+
+\begin{itemize}
+  \item Prototype role switcher.
+  \item Administrator dashboard with requests, devices, access settings, and shared decisions.
+  \item Murium dashboard with stable essential controls and progressive disclosure.
+  \item Ayun dashboard with allowed devices and visible locked controls.
+  \item Locked-control explanation, request action, request status, and approval scope.
+\end{itemize}
+
+\section{HCI Principles and Design Decisions}
+
+\small
+\rowcolors{2}{white}{SharedPale}
+\begin{tabularx}{\textwidth}{P{1.3in} P{2.25in} Y}
+  \thead{Principle} & \thead{Design decision} & \thead{Prototype implementation}\\
+  Hick's law & Reduce visible choices in the simpler experience & Three primary controls with additional controls disclosed later\\
+  Cognitive-load reduction & Keep each role focused on likely tasks & Role-specific content and short contextual guidance\\
+  Recognition over recall & Pair familiar symbols with text & Icon, device name, and state appear together\\
+  Visibility of system status & Show the result of device and request actions & State badges, request counts, and feedback messages\\
+  Error prevention & Stop restricted or high-consequence actions before execution & Locked controls and scoped Administrator approval\\
+  User control and freedom & Let users dismiss guidance and reverse safe changes & Close, Escape, Not now, and Undo actions\\
+  Progressive disclosure & Delay secondary controls until requested & Experience modes and additional-control sections\\
+  Accessible interaction & Provide generous targets and keyboard behavior & Large tiles, focus transfer, and Escape dismissal\\
+\end{tabularx}
+\normalsize
+
+\section{Interactive Prototype}
+
+SharedHome is implemented as a sequence of clickable web prototypes with a role switcher.
+Cross-role state lets a request made by Ayun appear in the Administrator view and an approval
+return to Ayun's view. Iteration 3c merges interface adaptation from Iteration 3a with
+household coordination from Iteration 3b while preserving the phone-based format.
+
+\textbf{Device scope.} Interview-grounded devices include lights, air conditioning,
+television, and fans. Wi-Fi and the front door are hypothesis devices used to test permission
+explanations, safety boundaries, and approval scope.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}[t]{0.47\textwidth}
+    \centering
+    \reportimage{report_assets/iteration-2-elder.png}{0.88\linewidth}\\
+    \small Elder view
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.47\textwidth}
+    \centering
+    \reportimage{report_assets/iteration-2-child.png}{0.88\linewidth}\\
+    \small Child view
+  \end{minipage}
+  \caption{Iteration 2 role-specific Elder and Child layouts}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \reportimage{report_assets/iteration-2-admin.png}{0.43\textwidth}
+  \caption{Iteration 2 Administrator dashboard and access management}
+\end{figure}
+
+\clearpage
+\section{Iterative Refinement}
+
+The prototype developed through a baseline concept, two feedback-led refinements, and three
+Iteration 3 branches. The table records what changed, why the team made the change, what it
+achieved, and the limitation that motivated the next step.
+
+\small
+\rowcolors{2}{white}{SharedPale}
+\begin{longtable}{P{0.55in} P{2.65in} P{3.15in}}
+  \thead{Iteration} & \thead{Change and purpose} & \thead{Result and remaining limitation}\\
+  \endhead
+  0 & Established Administrator, Elder, and Child views with common device controls, visible locked items, and a request and approval flow. & Made the role-aware concept testable. Views were fixed, guidance was thin, and learning and adaptation were not addressed.\\
+  1 & Tested the role layouts with the three participants and retained Wi-Fi and the front door as permission hypotheses. & Participants felt more comfortable but still needed time to adapt. No task times, errors, or attributed quotations were recorded.\\
+  2 & Added short guidance, stable device placement, consistent terminology, icon-plus-label controls, dialog focus, and Escape dismissal. & Participants reported faster learning and completion and a convenient experience. Evidence remained qualitative.\\
+  3a & Introduced Basic, Guided, and Full experiences, transparent recommendations, four-part restriction explanations, and reversible control. & Strengthened adaptation, accessibility, and autonomy but did not address shared decisions or Administrator workload.\\
+  3b & Added repeated-request rule suggestions, living-room AC preference negotiation, and plain-language home rules. & Strengthened coordination and fairness questions but omitted several features from 3a.\\
+  3c & Merged 3a and 3b and corrected schedule labeling and rule-suggestion safety conditions. & Current evaluation candidate. Adaptation, PACE recommendations, and schedules are simulated and unvalidated.\\
+\end{longtable}
+\normalsize
+
+\subsection{Participant Feedback Through Iteration 2}
+
+The first review suggested that role-specific layouts reduced some discomfort, but users
+still needed time to learn the arrangement. Iteration 2 kept essential controls in stable
+positions and placed short guidance near unfamiliar actions. The follow-up feedback indicated
+faster learning, adaptation, and completion. Because the team did not record task-level
+measurements or the speaker of the quotation, these observations support continued design
+work but do not establish a measured improvement.
+
+\begin{center}
+  \large\bfseries "Convenient experience"
+\end{center}
+
+\section{Iteration 3c Candidate Prototype}
+
+Iteration 3c combines the strongest parts of both Iteration 3 branches. It keeps low-risk
+essential controls stable while allowing a user to select the amount of detail and guidance.
+It also makes household rules and shared decisions visible across roles.
+
+\begin{itemize}
+  \item Murium can select Basic, Guided, or Full without changing her authority. A simulated recommendation explains why more controls are suggested and requires approval.
+  \item Ayun sees locked Wi-Fi, air-conditioning, and front-door items. The explanation identifies the reason, decision owner, available next action, and access duration.
+  \item The Administrator sees access requests and shared AC decisions as separate workloads and can review limited approval options.
+  \item Murium and Ayun can state different AC preferences, while the Administrator can select a compromise or one person's preference.
+  \item Home rules show who set each restriction and why. In Murium's view they remain behind additional controls.
+\end{itemize}
+
+\subsection{Safety and Validity Corrections}
+
+\begin{itemize}
+  \item Recurring suggestions count only approved requests. Pending or denied requests do not count, and no suggestion appears while matching access is active.
+  \item Accepting a recurring rule resolves a matching pending request. The front door is excluded from recurring suggestions.
+  \item The prototype labels schedules, familiarity, and PACE recommendations as simulated. It does not claim real-time scheduling or machine learning.
+\end{itemize}
+
+Ability-based adaptation, a household co-pilot, multimodal language support, and a
+vendor-neutral device layer remain future work rather than implemented features.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}[t]{0.47\textwidth}
+    \centering
+    \reportimage{report_assets/iteration-3c-elder.png}{0.88\linewidth}\\
+    \small Murium's Guided experience and transparent recommendation
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.47\textwidth}
+    \centering
+    \reportimage{report_assets/iteration-3c-child.png}{0.88\linewidth}\\
+    \small Ayun's allowed and locked controls with shared AC context
+  \end{minipage}
+  \caption{Iteration 3c role-specific views}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \reportimage{report_assets/iteration-3c-admin.png}{0.43\textwidth}
+  \caption{Iteration 3c Administrator requests, devices, and shared decisions}
+\end{figure}
+
+\clearpage
+\section{Project Contribution and Novelty}
+
+Role permissions, child restrictions, device icons, and temporary access are not individually
+novel. Commercial systems already use owner, member, resident, or guest permission models
+\cite{googlehome,applehome}. SharedHome's proposed contribution is the combined interaction
+model: the system changes presentation and permitted action, explains each boundary, supports
+a response inside the interface, and keeps recommendations under user control. This is a
+course-project contribution and research hypothesis, not a claim that no existing product
+contains any individual feature.
+
+\small
+\rowcolors{2}{white}{SharedPale}
+\begin{tabularx}{\textwidth}{P{1.1in} P{1.55in} Y P{1.45in}}
+  \thead{Dimension} & \thead{Common baseline} & \thead{SharedHome Iteration 3c} & \thead{Evidence status}\\
+  Interface complexity & A role mainly changes access rights. & The user selects Basic, Guided, or Full while essential controls stay in place. & Grounded in Murium's difficulty; 3c is untested.\\
+  Restriction feedback & A control may be unavailable or limited. & The interface explains why, who decides, what can be requested, and when access expires. & Design hypothesis.\\
+  Adaptation & Settings may be personalized manually. & A recommendation gives its reason and requires Accept, Not now, or Undo. & Simulated hypothesis.\\
+  Household conflict & An owner controls the device. & Different preferences remain visible and an Administrator resolves the AC decision. & Fairness hypothesis.\\
+  Repeated requests & The owner handles requests individually. & Two approved Wi-Fi or AC requests can trigger a simulated recurring rule. & Interruption hypothesis.\\
+\end{tabularx}
+\normalsize
+
+\subsection{PACE Design Model}
+
+PACE is the team's proposed description of transparent adaptation. It is not a validated
+general model. Each dimension changes presentation, guidance, approval scope, or feedback.
+The approach also responds to older-adult smart-home research that emphasizes customization
+and avoiding age-based assumptions \cite{ghorayeb}.
+
+\rowcolors{2}{white}{SharedPale}
+\begin{tabularx}{\textwidth}{P{0.95in} P{2.25in} Y}
+  \thead{Dimension} & \thead{Design question} & \thead{Prototype example}\\
+  Person & What are this person's preferences, accessibility needs, and authority? & Murium selects Guided mode while Ayun retains limited authority.\\
+  Action risk & What could happen if the action is performed incorrectly? & Lights are low risk, Wi-Fi is moderate risk, and the front door is excluded from recurring suggestions.\\
+  Context & When and for how long is the action needed? & Ayun requests one hour of Wi-Fi; the recurring 4--6 p.m. schedule is visibly simulated.\\
+  Experience & How familiar is the person with the task? & A simulated recommendation appears after successful use and requires explicit acceptance.\\
+\end{tabularx}
+
+\section{Phase 2 Deliverable Status}
+
+The current work covers every Phase 2 deliverable in the course brief. Items marked for
+validation belong to the Phase 3 study and are not evaluated outcomes.
+
+\small
+\rowcolors{2}{white}{SharedPale}
+\begin{tabularx}{\textwidth}{P{1.35in} Y P{2.05in}}
+  \thead{Course requirement} & \thead{Completed work} & \thead{Status and next evidence}\\
+  Design requirements & Ten requirements connect participant evidence or hypotheses to HCI rationale and prototype responses. & Completed for Phase 2; follow-up evidence is needed for restriction and request hypotheses.\\
+  Conceptual design & Personas, scenarios, task flows, information architecture, and role-specific wireframes are documented. & Completed; the Elder label evolved into user-selected experience levels.\\
+  HCI principles & Visibility, feedback, consistency, error prevention, recognition, cognitive-load reduction, progressive disclosure, user control, and accessibility are traced to features. & Completed and traceable.\\
+  Prototype development & Clickable Iterations 0, 1, 2, 3a, 3b, and 3c support role switching and cross-role state. & Iteration 3c is the current candidate.\\
+  Iterative refinement & The log records changes, reasons, feedback, unresolved limits, and the 3a and 3b merge. & Completed through 3c; formal evaluation remains pending.\\
+\end{tabularx}
+\normalsize
+
+\section{Evaluation Readiness}
+
+Phase 3 should compare Iteration 3c with a stripped-down baseline containing the same devices
+but a single-owner model, no restriction explanations, no adaptation recommendations, and no
+shared negotiation. The baseline has not yet been built. A within-participant comparison can
+reveal usability problems, but the three-person sample cannot support broad population claims.
+Task order should be counterbalanced where possible.
+
+\subsection{Research Questions}
+
+\begin{itemize}
+  \item Does transparent adaptation based on person, action risk, context, and experience improve task performance and permission understanding without reducing autonomy?
+  \item Do explainable restrictions help Ayun understand why an action is blocked, who manages it, what he can request, and when access expires?
+  \item Do rule suggestions reduce Administrator interruptions, and does shared AC negotiation improve perceived fairness?
+\end{itemize}
+
+\subsection{Planned Tasks and Measures}
+
+\small
+\rowcolors{2}{white}{SharedPale}
+\begin{tabularx}{\textwidth}{P{2.05in} P{2.1in} Y}
+  \thead{Persona and task} & \thead{Performance evidence} & \thead{Experience evidence}\\
+  Murium selects Guided mode, turns on the fan, responds to a shortcut suggestion, and reverses it. & Success, time, errors, assistance, hesitation, and correct use of Accept, Not now, and Undo. & Ease, confidence, perceived control, and whether the suggestion felt helpful or patronizing.\\
+  Ayun opens locked Wi-Fi, explains the restriction, requests one hour, and identifies the expiry. & Correct answers for why, who, next action, and duration; success, time, errors, and assistance. & Clarity, fairness, and whether the restriction felt like a dead end.\\
+  Ramz reviews Wi-Fi, handles the shared AC decision, and evaluates a recurring-rule suggestion. & Correct person, device, action, duration, and risk; completion time; requests handled; interruptions. & Workload, confidence, recommendation usefulness, and perceived fairness.\\
+\end{tabularx}
+\normalsize
+
+For every task, record the date, participant, condition, completion result, time in seconds,
+errors, assistance, hesitation points, chosen mode or permission, and one attributed
+quotation. Add brief ratings for clarity, autonomy, and fairness. If the course permits,
+report a standardized usability questionnaire separately from qualitative comments.
+
+\section{Limitations and Ethics}
+
+\begin{itemize}
+  \item The evidence comes from three participants in one household context, so results will be exploratory.
+  \item Ramz is both a team member and participant, which may introduce response bias.
+  \item The interview date, exact questions, recruitment details, and complete quotations remain undocumented.
+  \item The study record should document guardian permission and age-appropriate assent for Ayun.
+  \item Earlier reviews did not record numerical task times, error counts, or participant-level results, and the speaker of "convenient experience" is unknown.
+  \item Wi-Fi and the front door are test scenarios rather than devices reported in the original interviews.
+  \item PACE, adaptation, scheduling, and recurring-rule behavior are simulated. No machine learning or real-time schedule is operating.
+\end{itemize}
+
+\section{Team Responsibilities}
+
+\rowcolors{2}{white}{SharedPale}
+\begin{tabularx}{\textwidth}{P{1.2in} Y}
+  \thead{Owner} & \thead{Deliverables}\\
+  Ramz & Design requirements, evidence-to-feature chain, and HCI principle justification.\\
+  Hamza & Wireframes, information architecture, interactive prototypes, and prototype implementation.\\
+  Karam & Personas, scenarios, user flows, task models, evaluation records, and iteration log.\\
+\end{tabularx}
+
+\section{Conclusion}
+
+SharedHome now meets the Phase 2 goal of translating user evidence into an interactive,
+theory-grounded prototype. Iterations 0 through 2 established role-aware layouts, stable
+controls, contextual guidance, and icon-plus-label presentation. Iteration 3c adds transparent
+user-controlled adaptation, explainable restrictions, scoped access, and household
+negotiation. Its value has not yet been established through formal testing. The next step is
+to build the stripped-down baseline and evaluate both conditions with recorded task
+performance, permission comprehension, autonomy, Administrator interruptions, and fairness.
+
+\begin{thebibliography}{9}
+
+\bibitem{applehome}
+Apple. (2026).
+\newblock \emph{Allow others to control accessories in your home}.
+\newblock Apple Support.
+\newblock \url{https://support.apple.com/guide/iphone/iphcbaf7e8f3/ios}
+
+\bibitem{ghorayeb}
+Ghorayeb, A., Comber, R., and Gooberman-Hill, R. (2023).
+\newblock Older adults' perspectives of smart home technology: Are we developing the technology that older people want?
+\newblock \emph{International Journal of Human-Computer Studies}, 170, 102979.
+\newblock \url{https://doi.org/10.1016/j.ijhcs.2022.102979}
+
+\bibitem{googlehome}
+Google. (2026).
+\newblock \emph{Share a home and devices in the Google Home app}.
+\newblock Google Nest Help.
+\newblock \url{https://support.google.com/googlenest/answer/9155535}
+
+\bibitem{hick}
+Hick, W. E. (1952).
+\newblock On the rate of gain of information.
+\newblock \emph{Quarterly Journal of Experimental Psychology}, 4(1), 11--26.
+\newblock \url{https://doi.org/10.1080/17470215208416600}
+
+\bibitem{nielsen}
+Nielsen, J. (1994).
+\newblock \emph{10 usability heuristics for user interface design}.
+\newblock Nielsen Norman Group.
+\newblock \url{https://www.nngroup.com/articles/ten-usability-heuristics/}
+
+\bibitem{norman}
+Norman, D. A. (2013).
+\newblock \emph{The design of everyday things}. Revised and expanded edition.
+\newblock Basic Books.
+
+\bibitem{wcag}
+World Wide Web Consortium. (2023).
+\newblock \emph{Web Content Accessibility Guidelines 2.2}.
+\newblock \url{https://www.w3.org/TR/WCAG22/}
+
+\end{thebibliography}
+
+\end{document}
